@@ -4,6 +4,10 @@ serialtester
 data_input
 data_output
 
+# VIM temp files
+*.swp
+*.swo
+
 # Object files
 *.o
 *.ko
