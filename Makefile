@@ -5,7 +5,7 @@ datagen:
 	@gcc -o datagen src/datagen.c src/Lab3IO.c
 
 serialtester:
-	@gcc -o serialtester src/serialtester.c src/Lab3IO.c
+	@gcc -o serialtester src/serialtester.c src/Lab3IO.c -lm
 
 clean:
 	-@rm -rf main data_input data_output serialtester datagen
