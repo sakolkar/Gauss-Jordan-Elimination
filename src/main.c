@@ -25,6 +25,9 @@ int main(int argc, char* argv[]) {
     printf("\n");
 
     gaussian_elimination();
+
+    PrintMat(A, size, size + 1);
+    printf("\n");
     jordan_elimination();
 
     PrintMat(A, size, size + 1);
@@ -51,7 +54,14 @@ void gaussian_elimination() {
 }
 
 void jordan_elimination() {
+    int i, k;
 
+    for (k = size-1 ; k > 0; --k) {
+        for (i = 0; i < k; ++i) {
+            A[i][size] = A[i][size] - (A[i][k] / A[k][k] * A[k][size]);
+            A[i][k] = 0;
+        }
+    }
 }
 
 int get_max_row(int cur_row) {
