@@ -1,3 +1,9 @@
+datagen
+main
+serialtester
+data_input
+data_output
+
 # Object files
 *.o
 *.ko
