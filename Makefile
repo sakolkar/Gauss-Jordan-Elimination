@@ -1,5 +1,5 @@
 main:
-	@gcc -g -Wall -o main src/main.c src/Lab3IO.c -lm -lpthread
+	@gcc -g -Wall -o main src/main.c src/Lab3IO.c -lm -fopenmp
 
 datagen:
 	@gcc -o datagen src/datagen.c src/Lab3IO.c

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include "timer.h"
 #include "Lab3IO.h"
@@ -8,6 +9,7 @@
 double **A;
 double *x;
 int    size;
+int    thread_count;
 
 // Function Signatures
 void gaussian_elimination();
@@ -17,20 +19,23 @@ void swap_rows();
 
 int main(int argc, char* argv[]) {
 
+    if (argc != 2)
+        fprintf(stderr, "Usage: Requires number of threads.");
+
+    thread_count = atoi(argv[1]);
+
     Lab3LoadInput(&A, &size);
     x = CreateVec(size);
 
-    PrintMat(A, size, size + 1);
-
-    printf("\n");
-
     gaussian_elimination();
-
-    PrintMat(A, size, size + 1);
-    printf("\n");
     jordan_elimination();
 
-    PrintMat(A, size, size + 1);
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        x[i] = A[i][size] / A[i][i];
+    }
+
+    Lab3SaveOutput(x, size, 0);
 
     DestroyVec(x);
     DestroyMat(A, size);
@@ -43,9 +48,10 @@ void gaussian_elimination() {
     for(k = 0; k < size - 1; ++k) {
         swap_rows(k, get_max_row(k));
 
+#       pragma omp parallel for num_threads(thread_count) \
+            firstprivate(A)
         for(i = k + 1; i < size; ++i) {
             double temp = A[i][k] / A[k][k];
-
             for(j = k; j < size + 1; ++j) {
                 A[i][j] = A[i][j] - temp * A[k][j];
             }
