@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
@@ -48,10 +49,12 @@ void gaussian_elimination() {
     for(k = 0; k < size - 1; ++k) {
         swap_rows(k, get_max_row(k));
 
+	double temp;
+
 #       pragma omp parallel for num_threads(thread_count) \
-            firstprivate(A)
+	shared(A) private(i, temp, j)
         for(i = k + 1; i < size; ++i) {
-            double temp = A[i][k] / A[k][k];
+            temp = A[i][k] / A[k][k];
             for(j = k; j < size + 1; ++j) {
                 A[i][j] = A[i][j] - temp * A[k][j];
             }
@@ -62,6 +65,7 @@ void gaussian_elimination() {
 void jordan_elimination() {
     int i, k;
 
+//# pragma omp parallel for
     for (k = size-1 ; k > 0; --k) {
         for (i = 0; i < k; ++i) {
             A[i][size] = A[i][size] - (A[i][k] / A[k][k] * A[k][size]);
