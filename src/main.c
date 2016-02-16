@@ -28,6 +28,10 @@ int main(int argc, char* argv[]) {
     Lab3LoadInput(&A, &size);
     x = CreateVec(size);
 
+    double start, end;
+
+    GET_TIME(start);
+
     gaussian_elimination();
     jordan_elimination();
 
@@ -36,7 +40,9 @@ int main(int argc, char* argv[]) {
         x[i] = A[i][size] / A[i][i];
     }
 
-    Lab3SaveOutput(x, size, 0);
+    GET_TIME(end);
+
+    Lab3SaveOutput(x, size, end-start);
 
     DestroyVec(x);
     DestroyMat(A, size);
@@ -51,7 +57,7 @@ void gaussian_elimination() {
 
 	double temp;
 
-#       pragma omp parallel for num_threads(thread_count) \
+        # pragma omp parallel for num_threads(thread_count) \
 	shared(A) private(i, temp, j)
         for(i = k + 1; i < size; ++i) {
             temp = A[i][k] / A[k][k];
@@ -65,11 +71,10 @@ void gaussian_elimination() {
 void jordan_elimination() {
     int i, k;
 
-//# pragma omp parallel for
     for (k = size-1 ; k > 0; --k) {
         for (i = 0; i < k; ++i) {
             A[i][size] = A[i][size] - (A[i][k] / A[k][k] * A[k][size]);
-            A[i][k] = 0;
+	    A[i][k] = 0;
         }
     }
 }
