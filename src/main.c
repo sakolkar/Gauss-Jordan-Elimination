@@ -36,6 +36,8 @@ int main(int argc, char* argv[]) {
     jordan_elimination();
 
     int i = 0;
+    
+    # pragma omp parallel for num_threads(thread_count)
     for (i = 0; i < size; ++i) {
         x[i] = A[i][size] / A[i][i];
     }
