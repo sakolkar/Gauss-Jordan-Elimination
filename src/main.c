@@ -53,11 +53,10 @@ int main(int argc, char* argv[]) {
 
 void gaussian_elimination() {
     int i, j, k;
+    double temp;
 
     for(k = 0; k < size - 1; ++k) {
         swap_rows(k, get_max_row(k));
-
-	double temp;
 
         # pragma omp parallel for num_threads(thread_count) \
 	shared(A) private(i, temp, j)
