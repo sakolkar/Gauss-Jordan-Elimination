@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
     GET_TIME(end);
 
     Lab3SaveOutput(x, size, end-start);
+    printf("time is: %e\n", end-start);
 
     DestroyVec(x);
     DestroyMat(A, size);
@@ -73,8 +74,6 @@ void jordan_elimination() {
     int i, k;
 
     for (k = size-1 ; k > 0; --k) {
-	# pragma omp parallel for num_threads(thread_count) \
-	shared(A) private(i)
         for (i = 0; i < k; ++i) {
             A[i][size] = A[i][size] - (A[i][k] / A[k][k] * A[k][size]);
 	    A[i][k] = 0;
