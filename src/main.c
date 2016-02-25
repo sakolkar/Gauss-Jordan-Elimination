@@ -72,7 +72,7 @@ void gaussian_elimination() {
         # pragma omp single
         swap_rows(k, get_max_row(k));
 
-        # pragma omp for schedule(guided)
+        # pragma omp for schedule(guided) nowait
         for(i = k + 1; i < size; ++i) {
             for(j = k; j < size + 1; ++j) {
                 if( j == k )
