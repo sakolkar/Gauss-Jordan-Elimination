@@ -3,6 +3,8 @@ main
 serialtester
 data_input
 data_output
+members
+readme
 
 # VIM temp files
 *.swp

@@ -29,17 +29,19 @@ int main(int argc, char* argv[]) {
     x = CreateVec(size);
 
     double start, end;
-
-    GET_TIME(start);
-
-    gaussian_elimination();
-    jordan_elimination();
-
     int i = 0;
 
-    # pragma omp parallel for num_threads(thread_count)
-    for (i = 0; i < size; ++i) {
-        x[i] = A[i][size] / A[i][i];
+    GET_TIME(start);
+    # pragma omp parallel num_threads(thread_count) \
+    shared(A)
+    {
+        gaussian_elimination();
+        jordan_elimination();
+
+        # pragma omp for
+        for (i = 0; i < size; ++i) {
+            x[i] = A[i][size] / A[i][i];
+        }
     }
 
     GET_TIME(end);
@@ -57,13 +59,14 @@ void gaussian_elimination() {
     double temp;
 
     for(k = 0; k < size - 1; ++k) {
+        # pragma omp single
         swap_rows(k, get_max_row(k));
 
-        # pragma omp parallel for num_threads(thread_count) \
-          shared(A) private(i, temp, j)
+        # pragma omp for schedule(guided)
         for(i = k + 1; i < size; ++i) {
-            temp = A[i][k] / A[k][k];
             for(j = k; j < size + 1; ++j) {
+                if( j == k )
+                    temp = A[i][k] / A[k][k];
                 A[i][j] = A[i][j] - temp * A[k][j];
             }
         }
@@ -74,6 +77,7 @@ void jordan_elimination() {
     int i, k;
 
     for (k = size-1 ; k > 0; --k) {
+        # pragma omp for schedule(static)
         for (i = 0; i < k; ++i) {
             A[i][size] = A[i][size] - (A[i][k] / A[k][k] * A[k][size]);
             A[i][k] = 0;
